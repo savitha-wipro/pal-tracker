@@ -5,4 +5,4 @@ applications:
   routes:
   - route: pal-tracker-invulnerable-saltfish-review.cfapps.io
   env:
-    WELCOME_MESSAGE: Hello from review environment
+    WELCOME_MESSAGE: Hello from the review environment
