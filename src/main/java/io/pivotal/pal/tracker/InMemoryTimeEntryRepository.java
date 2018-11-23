@@ -11,11 +11,11 @@ public class InMemoryTimeEntryRepository implements TimeEntryRepository {
     public TimeEntry create(TimeEntry timeEntry) {
         Long id = timeEntries.size() + 1L;
         TimeEntry newTimeEntry = new TimeEntry(
-                id,
-                timeEntry.getProjectId(),
-                timeEntry.getUserId(),
-                timeEntry.getDate(),
-                timeEntry.getHours()
+            id,
+            timeEntry.getProjectId(),
+            timeEntry.getUserId(),
+            timeEntry.getDate(),
+            timeEntry.getHours()
         );
 
         timeEntries.put(id, newTimeEntry);
@@ -35,11 +35,11 @@ public class InMemoryTimeEntryRepository implements TimeEntryRepository {
     @Override
     public TimeEntry update(Long id, TimeEntry timeEntry) {
         TimeEntry updatedEntry = new TimeEntry(
-                id,
-                timeEntry.getProjectId(),
-                timeEntry.getUserId(),
-                timeEntry.getDate(),
-                timeEntry.getHours()
+            id,
+            timeEntry.getProjectId(),
+            timeEntry.getUserId(),
+            timeEntry.getDate(),
+            timeEntry.getHours()
         );
 
         timeEntries.replace(id, updatedEntry);
