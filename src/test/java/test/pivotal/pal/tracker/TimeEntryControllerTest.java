@@ -1,5 +1,6 @@
 package test.pivotal.pal.tracker;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import io.pivotal.pal.tracker.TimeEntry;
 import io.pivotal.pal.tracker.TimeEntryController;
 import io.pivotal.pal.tracker.TimeEntryRepository;
@@ -20,11 +21,18 @@ import static org.mockito.Mockito.*;
 public class TimeEntryControllerTest {
     private TimeEntryRepository timeEntryRepository;
     private TimeEntryController controller;
+    //private CounterService counterService;
+    //private GaugeService gaugeService;
+
+    private MeterRegistry counterService;
+    private MeterRegistry gaugeService;
 
     @Before
     public void setUp() throws Exception {
         timeEntryRepository = mock(TimeEntryRepository.class);
-        controller = new TimeEntryController(timeEntryRepository);
+        counterService = mock(MeterRegistry.class);
+        gaugeService = mock(MeterRegistry.class);
+        controller = new TimeEntryController(timeEntryRepository, counterService, gaugeService);
     }
 
     @Test
@@ -32,8 +40,8 @@ public class TimeEntryControllerTest {
         TimeEntry timeEntryToCreate = new TimeEntry(123L, 456L, LocalDate.parse("2017-01-08"), 8);
         TimeEntry expectedResult = new TimeEntry(1L, 123L, 456L, LocalDate.parse("2017-01-08"), 8);
         doReturn(expectedResult)
-            .when(timeEntryRepository)
-            .create(any(TimeEntry.class));
+                .when(timeEntryRepository)
+                .create(any(TimeEntry.class));
 
 
         ResponseEntity response = controller.create(timeEntryToCreate);
@@ -48,8 +56,8 @@ public class TimeEntryControllerTest {
     public void testRead() throws Exception {
         TimeEntry expected = new TimeEntry(1L, 123L, 456L, LocalDate.parse("2017-01-08"), 8);
         doReturn(expected)
-            .when(timeEntryRepository)
-            .find(1L);
+                .when(timeEntryRepository)
+                .find(1L);
 
         ResponseEntity<TimeEntry> response = controller.read(1L);
 
@@ -61,8 +69,8 @@ public class TimeEntryControllerTest {
     @Test
     public void testRead_NotFound() throws Exception {
         doReturn(null)
-            .when(timeEntryRepository)
-            .find(1L);
+                .when(timeEntryRepository)
+                .find(1L);
 
         ResponseEntity<TimeEntry> response = controller.read(1L);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -71,8 +79,8 @@ public class TimeEntryControllerTest {
     @Test
     public void testList() throws Exception {
         List<TimeEntry> expected = asList(
-            new TimeEntry(1L, 123L, 456L, LocalDate.parse("2017-01-08"), 8),
-            new TimeEntry(2L, 789L, 321L, LocalDate.parse("2017-01-07"), 4)
+                new TimeEntry(1L, 123L, 456L, LocalDate.parse("2017-01-08"), 8),
+                new TimeEntry(2L, 789L, 321L, LocalDate.parse("2017-01-07"), 4)
         );
         doReturn(expected).when(timeEntryRepository).list();
 
@@ -87,8 +95,8 @@ public class TimeEntryControllerTest {
     public void testUpdate() throws Exception {
         TimeEntry expected = new TimeEntry(1L, 987L, 654L, LocalDate.parse("2017-01-07"), 4);
         doReturn(expected)
-            .when(timeEntryRepository)
-            .update(eq(1L), any(TimeEntry.class));
+                .when(timeEntryRepository)
+                .update(eq(1L), any(TimeEntry.class));
 
         ResponseEntity response = controller.update(1L, expected);
 
@@ -100,8 +108,8 @@ public class TimeEntryControllerTest {
     @Test
     public void testUpdate_NotFound() throws Exception {
         doReturn(null)
-            .when(timeEntryRepository)
-            .update(eq(1L), any(TimeEntry.class));
+                .when(timeEntryRepository)
+                .update(eq(1L), any(TimeEntry.class));
 
         ResponseEntity response = controller.update(1L, new TimeEntry());
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
